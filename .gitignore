@@ -1,6 +1,12 @@
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
+**/idea/
+**/.ipynb_*
+
+#
 *.zip
+
+# Meshes
 **/*.vtk
 
 # Scrapy stuff:
