@@ -37,7 +37,7 @@ def main():
         mesh_airways = Mesh.from_scan(segmented_lungs_fill - segmented_lungs, threshold=0)
         mesh_airways.save("airways.vtk")
     else:
-        print(Fore.GREEN + 'LOAD: 3D mesh loading.')
+        print(Fore.GREEN + 'LOAD: 3D mesh loading...')
         mesh_skeleton   = Mesh.load(os.path.join(OUTPUT_FOLDER, "skeleton.vtk"))
         mesh_lungs_fill = Mesh.load(os.path.join(OUTPUT_FOLDER, "lungs.vtk"))
         mesh_airways    = Mesh.load(os.path.join(OUTPUT_FOLDER, "airways.vtk"))

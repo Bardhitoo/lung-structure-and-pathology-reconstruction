@@ -4,7 +4,7 @@ import pyvista as pv
 from skimage import measure
 
 if not os.path.exists("../meshes"):
-    os.mkdir("../meshes")
+    os.mkdir("./meshes")
 
 
 class Mesh:
