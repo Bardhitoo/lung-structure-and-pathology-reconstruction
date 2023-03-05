@@ -1,6 +1,6 @@
 # Byte-compiled / optimized / DLL files
 **/__pycache__/
-**/idea/
+**/.idea/
 **/.ipynb_*
 
 #
@@ -11,3 +11,6 @@
 
 # Scrapy stuff:
 .scrapy
+
+# My Work (Temporarily Hidden)
+**/*.py
