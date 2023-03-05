@@ -8,7 +8,10 @@ A 3D reconstruction module `Mesh` is also included, creating detailed 3D models 
 
 The ultimate goal of the project is to improve the accuracy and efficiency of lung nodule detection and lung and airway reconstruction, with the potential to enhance the diagnostic capabilities of oncologists and improve patient outcomes.
 
-<img src="./project/figs/currentWork.gif" width="600"> 
+# Demo
+
+This polyhedron demo is realtime and is rendered on GPU, an
+<img src="./project/figs/currentWork.gif" width="800"> 
 
 ## Contributor:
     Bardh Rushiti (bardhrushiti@gmail.com)
