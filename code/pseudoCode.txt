@@ -1,0 +1,40 @@
+# Load scan the CT scan (Read the .mhd file)
+
+# Threshold values outside of scan to equal the values of air (so we can ignore them)
+
+# Resample to isomorphic pixels (x,y,z) -> (1,1,1)
+
+# Segmenting the lungs
+    # Values of the lungs have usually values -500HU
+    # binary_image -> Binarize the image at -320HU
+    # labls -> connected components with 4 neighbors
+
+    (To get the irrelevant pixels that are surrounding the circular in the scan)
+    # Find the background labels around circle
+        # get width, height, and depth of scan
+        # stroke_thickness -> 2
+        # radius1 -> w/2 (square image)
+        # radius2 -> radius1 - stroke_thickness
+        # center -> width / 2
+
+        # Create a meshgrid with the size of the image
+        # Get the distance from the center using pythagorean theorem
+
+        # Create mask1 with values <= than radius1
+        # Create mask2 with values <= than radius2
+
+        # Create final mask by mask1 xor mask2
+        # Create a 3D version of the mask
+        # Get the labels from those locations by multiplying the labels with the mask
+
+    # Invert the image
+    # Get the connected components again
+    # Find the most used label in there -> convert it to 0 (air)
+
+    # Return binary image
+
+# Plot_3D(scan, threshold):
+    # Transpose so the head is always up
+    # Get the vertices & faces from marching_cubes(scan) method
+    # Create the mesh from Poly3DCollection
+    # Plot it
