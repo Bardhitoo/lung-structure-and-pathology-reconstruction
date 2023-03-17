@@ -7,14 +7,13 @@ from utils.LungScanner import LungScanner
 from utils.Mesh import Mesh
 
 # Some constants
-INPUT_FOLDER = "C:\\Users\\bardh\\Desktop\\2021\\RIT_CS\\sem_2\\independent_study\\lung_cancer_proj\\data" \
-               "\\subset_012345\\"
+INPUT_FOLDER = "./data"
 OUTPUT_FOLDER = "./meshes"
-READING_FROM_FILE = False
+PROCESS_FROM_FILE = False
 
 
 def main():
-    if READING_FROM_FILE:
+    if PROCESS_FROM_FILE:
         patients = [file for file in os.listdir(INPUT_FOLDER) if file.endswith(".mhd")]
         patients.sort()
 
@@ -37,10 +36,10 @@ def main():
         mesh_airways = Mesh.from_scan(segmented_lungs_fill - segmented_lungs, threshold=0)
         mesh_airways.save("airways.vtk")
     else:
-        print(Fore.GREEN + 'LOAD: 3D mesh loading...')
-        mesh_skeleton   = Mesh.load(os.path.join(OUTPUT_FOLDER, "skeleton.vtk"))
+        print(Fore.GREEN + 'LOAD: 3D meshes loading...')
+        mesh_skeleton = Mesh.load(os.path.join(OUTPUT_FOLDER, "skeleton.vtk"))
         mesh_lungs_fill = Mesh.load(os.path.join(OUTPUT_FOLDER, "lungs.vtk"))
-        mesh_airways    = Mesh.load(os.path.join(OUTPUT_FOLDER, "airways.vtk"))
+        mesh_airways = Mesh.load(os.path.join(OUTPUT_FOLDER, "airways.vtk"))
 
     # shape="3|1" means 3 plots on the left and 1 on the right,
     # shape="4/2" means 4 plots on top of 2 at bottom.
@@ -60,7 +59,9 @@ def main():
 
     plotter.subplot(3)
     plotter.add_text("")
-    plotter.add_mesh(mesh_lungs_fill.merge(mesh_skeleton), show_edges=False, color=(1., 1., .95))
+    plotter.add_mesh(mesh_lungs_fill, show_edges=False, color=(1., 0., 0.4))
+    plotter.add_mesh(mesh_skeleton, show_edges=False, color=(.98, 1., .96))
+    plotter.add_mesh(mesh_airways, show_edges=False, color=(1., 0.5, 0.5))
 
     # link all the views
     plotter.link_views()
