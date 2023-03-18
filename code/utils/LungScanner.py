@@ -49,7 +49,7 @@ class LungScanner:
 
         self.resampled_image = scipy.ndimage.interpolation.zoom(self.image, real_resize_factor, mode="nearest")
 
-        print(Fore.YELLOW + "\tShape before resampling\t", self.pixel_spacing.shape)
+        print(Fore.YELLOW + "\tShape before resampling\t", self.image.shape)
         print(Fore.YELLOW + "\tShape after resampling\t", new_shape)
         print(Style.RESET_ALL)
 
