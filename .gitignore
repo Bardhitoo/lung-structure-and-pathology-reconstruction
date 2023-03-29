@@ -11,3 +11,11 @@
 
 # Scrapy stuff:
 .scrapy
+
+# Remove my paper updates
+**/myPaper/
+
+# Video files
+**/*.mp4
+**/data/
+**/numpy_arrays/
