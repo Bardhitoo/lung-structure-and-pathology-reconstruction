@@ -12,7 +12,7 @@ The ultimate goal of the project is to improve the accuracy and efficiency of lu
 
 This polyhedron demo is rendered on GPU and is real-time.
 
-<img src="./project/figs/currentWork.gif" width="800"> 
+<img src="./code/figs/currentWork.gif" width="800"> 
 
 ## Contributor:
     Bardh Rushiti (bardhrushiti@gmail.com)
