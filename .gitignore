@@ -19,3 +19,10 @@
 **/*.mp4
 **/data/
 **/numpy_arrays/
+
+# Annotations for LIDC
+**/annot/
+
+# Generated files
+**/*.obj
+**/*.npy
