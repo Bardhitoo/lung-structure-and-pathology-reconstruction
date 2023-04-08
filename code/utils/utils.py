@@ -119,10 +119,14 @@ def extract_meshes_from_scan(patient_of_interest):
     mesh_airways.save("airways.obj")
 
     print(Fore.GREEN + 'PLOT: 3D plotting lung nodules... May take a little bit' + Fore.RESET)
-    nodules_mask = generate_contours(patient_of_interest[:-4])
-    resampled_nodule_mask = scipy.ndimage.interpolation.zoom(nodules_mask, scan.real_resize_factor, mode="nearest")  # TODO: Find a better way to do this
-    # resampled_nodule_mask = resampled_nodule_mask.transpose(2, 1, 0)
-    mesh_nodules = Mesh.from_scan(resampled_nodule_mask, name="Nodules", color=(0.18, 0.09, 0.2), threshold=0)
+    pre_nodules_mask = generate_contours(patient_of_interest[:-4])
+
+    (z_min, _), (y_min, _), (x_min, _) = get_lung_box(segmented_lungs_fill, scan.resampled_image.shape, scan.image.shape)
+
+    nodules_mask = np.zeros((scan.resampled_image.shape))
+    nodules_mask[z_min:z_min + pre_nodules_mask.shape[0], y_min:y_min + pre_nodules_mask.shape[1],x_min:x_min + pre_nodules_mask.shape[2]] = pre_nodules_mask
+
+    mesh_nodules = Mesh.from_scan(nodules_mask, name="Nodules", color=(0.18, 0.09, 0.2), threshold=0)
     mesh_nodules.save("nodules.obj")
 
     return mesh_airways, mesh_lungs_fill, mesh_nodules, mesh_skeleton
@@ -180,5 +184,40 @@ def visualize_meshes(processed_meshes):
 
     # plotter.camera_position = [(15, 5, 0), (0, 0, 0), (0, 1, 0)]
     plotter.show()
+
+
+# Reference: https://github.com/uci-cbcl/NoduleNet/blob/master/utils/LIDC/preprocess.py
+def get_lung_box(binary_mask, new_shape, old_shape, margin=12):
+    """
+    Get the lung barely surrounding the lung based on the binary_mask and the
+    new_spacing.
+    binary_mask: 3D binary numpy array with the same shape of the image,
+        that only region of both sides of the lung is True.
+    new_shape: tuple of int * 3, new shape of the image after resamping in
+        [z, y, x] order.
+    margin: int, number of voxels to extend the boundry of the lung box.
+    return: 3x2 2D int numpy array denoting the
+        [z_min:z_max, y_min:y_max, x_min:x_max] of the lung box with respect to
+        the image after resampling.
+    """
+    # list of z, y x indexes that are true in binary_mask
+    z_true, y_true, x_true = np.where(binary_mask)
+
+    lung_box = np.array([[np.min(z_true), np.max(z_true)],
+                         [np.min(y_true), np.max(y_true)],
+                         [np.min(x_true), np.max(x_true)]])
+
+    lung_box = np.floor(lung_box).astype('int')
+
+    z_min, z_max = lung_box[0]
+    y_min, y_max = lung_box[1]
+    x_min, x_max = lung_box[2]
+
+    # extend the lung_box by a margin
+    lung_box[0] = max(0, z_min - margin), min(new_shape[0], z_max + margin)
+    lung_box[1] = max(0, y_min - margin), min(new_shape[1], y_max + margin)
+    lung_box[2] = max(0, x_min - margin), min(new_shape[2], x_max + margin)
+
+    return lung_box
 
 
