@@ -11,7 +11,7 @@ class LungScanner:
         self.scan_path = scan_path
         self.image = None
         self.pixel_spacing = None
-        self.real_resize_factor = None
+        self.resize_factor = None
         self.resampled_image = None
         self.meshes = dict()
 
@@ -43,9 +43,9 @@ class LungScanner:
         resize_factor = spacing / new_spacing
         new_real_shape = self.image.shape * resize_factor
         new_shape = np.round(new_real_shape)
-        self.real_resize_factor = new_shape / self.image.shape
+        self.resize_factor = new_shape / self.image.shape
 
-        self.resampled_image = scipy.ndimage.interpolation.zoom(self.image, self.real_resize_factor, mode="nearest")
+        self.resampled_image = scipy.ndimage.interpolation.zoom(self.image, self.resize_factor, mode="nearest")
 
         print(Fore.YELLOW + "\tShape before resampling\t", self.image.shape)
         print(Fore.YELLOW + "\tShape after resampling\t", new_shape)
@@ -70,7 +70,9 @@ class LungScanner:
             print(Fore.GREEN + 'PROCESS: 3D processing airways... May take a little bit' + Style.RESET_ALL)
 
         # 0 is treated as background, which we do not want
-        binary_image = np.array(self.image > -320, dtype=np.int8) + 1 # not actually binary, but 1 and 2
+        # not actually binary, but 1 and 2
+        binary_image = np.array(self.resampled_image > -320, dtype=np.int8) + 1
+
         # connected components of binary scan
         labels = measure.label(binary_image)
 
@@ -153,4 +155,4 @@ class LungScanner:
         return irrelevant_labels
 
     def get_scan(self):
-        return self.image
+        return self.resampled_image
