@@ -16,7 +16,7 @@ The 3D reconstruction module creates detailed 3D models of the lung, airways, an
 
 This polyhedron demo is rendered on GPU and is real-time.
 
-<img src="./code/figs/currentWork.gif" width="800"> 
+<img src="./code/figs/currentWork3.gif" width="800" > 
 
 ## Getting Started
 To get started with the project, please follow the installation and usage instructions provided in the documentation.
