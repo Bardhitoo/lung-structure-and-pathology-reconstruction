@@ -113,18 +113,26 @@ def extract_meshes_from_scan(patient_of_interest):
     mesh_lungs_fill.save("lungs.obj")
 
     print(Fore.GREEN + 'PLOT: 3D plotting lung airways... May take a little bit')
-    mesh_airways = Mesh.from_scan(segmented_lungs_fill - segmented_lungs, name="Airways", color=(1., 0.5, 0.5),
-                                  threshold=0)
+    mesh_airways = Mesh.from_scan(segmented_lungs_fill - segmented_lungs, name="Airways", color=(1., 0.5, 0.5), threshold=0)
     mesh_airways.save("airways.obj")
 
     print(Fore.GREEN + 'PLOT: 3D plotting lung nodules... May take a little bit' + Fore.RESET)
     pre_nodules_mask = generate_contours(patient_of_interest[:-4], threshold=config["THRESHOLD"])
     pre_nodules_mask = pre_nodules_mask[:-15, :, :]
 
-    (z_min, _), (y_min, _), (x_min, _) = get_lung_box(segmented_lungs_fill, scan.resampled_image.shape, scan.image.shape)
+    (z_min, _), (y_min, _), (x_min, _) = get_lung_box(segmented_lungs_fill, scan.resampled_image.shape,
+                                                      scan.image.shape, margin=14)
 
     nodules_mask = np.zeros((scan.resampled_image.shape))
-    nodules_mask[z_min:z_min + pre_nodules_mask.shape[0], y_min:y_min + pre_nodules_mask.shape[1],x_min:x_min + pre_nodules_mask.shape[2]] = pre_nodules_mask
+
+    # adding padding to offset the external padding added to the prediction
+    # see this figure for reference:
+        # "C:\Users\bardh\Desktop\2021\RIT_CS\sem_2\independent_study\lung_cancer_proj\my_figs\prediction.gif"
+    t = 14  # Translation
+    print(f"nodules_mask: {nodules_mask.shape}, pred_nodules_mask: {pre_nodules_mask.shape}")
+    nodules_mask[z_min + 12:z_min + pre_nodules_mask.shape[0] + 12,
+                 y_min + t:y_min + pre_nodules_mask.shape[1] + t,
+                 x_min + t:x_min + pre_nodules_mask.shape[2] + t] = pre_nodules_mask
 
     mesh_nodules = Mesh.from_scan(nodules_mask, name="Nodules", color=(0.18, 0.09, 0.2), threshold=0)
     mesh_nodules.save("nodules.obj")
