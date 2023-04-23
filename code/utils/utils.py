@@ -100,6 +100,7 @@ def extract_meshes_from_scan(patient_of_interest):
     scan = LungScanner(os.path.join(config["INPUT_FOLDER"], patient_of_interest))
     scan.read_scan()
     scan.resample(new_spacing=np.array([1, 1, 1]))
+    np.save('./ndarrays/scan', scan.get_scan())
 
     segmented_lungs = scan.segment_lung_mask(False)
     segmented_lungs_fill = scan.segment_lung_mask(True)
