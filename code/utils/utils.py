@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import pyvista as pv
-import scipy
 from colorama import Fore
 
 import matplotlib.pyplot as plt
@@ -76,11 +75,11 @@ def remove_irrelevant_preds(nodule: pd.Series, nodule_mask: np.array):
     return nodule_mask
 
 
-def generate_contours(uid_of_interest):
+def generate_contours(uid_of_interest, threshold=.95):
     load_dir = r"C:\Users\bardh\Desktop\2021\RIT_CS\sem_2\independent_study\lung_cancer_proj\NoduleNet\results\cross_val_test\res\200"
     rpns = pd.read_csv(load_dir + "\\FROC\\submission_rpn.csv")
-    THRESHOLD = 0.95
 
+    # load prediction
     pred = np.load(os.path.join(load_dir, uid_of_interest + ".npy"))
     pred_updated = pred.copy()  # To store and compare changes
 
@@ -88,7 +87,7 @@ def generate_contours(uid_of_interest):
     uid_nodules = rpns[(rpns.seriesuid == uid_of_interest)]
 
     # Anything smaller than threshold, not taken into account
-    uid_irrelevant_nodules = uid_nodules[uid_nodules.probability < THRESHOLD]
+    uid_irrelevant_nodules = uid_nodules[uid_nodules.probability < threshold]
 
     # Post-processing of detected nodules
     for idx, nodule in uid_irrelevant_nodules.iterrows():
@@ -119,7 +118,8 @@ def extract_meshes_from_scan(patient_of_interest):
     mesh_airways.save("airways.obj")
 
     print(Fore.GREEN + 'PLOT: 3D plotting lung nodules... May take a little bit' + Fore.RESET)
-    pre_nodules_mask = generate_contours(patient_of_interest[:-4])
+    pre_nodules_mask = generate_contours(patient_of_interest[:-4], threshold=config["THRESHOLD"])
+    pre_nodules_mask = pre_nodules_mask[:-15, :, :]
 
     (z_min, _), (y_min, _), (x_min, _) = get_lung_box(segmented_lungs_fill, scan.resampled_image.shape, scan.image.shape)
 
