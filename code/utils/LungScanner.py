@@ -65,9 +65,9 @@ class LungScanner:
 
     def segment_lung_mask(self, fill_lung_structures=True):
         if fill_lung_structures:
-            print(Fore.GREEN + 'PROCESS: 3D processing lungs... May take a little bit' + Style.RESET_ALL)
-        else:
             print(Fore.GREEN + 'PROCESS: 3D processing airways... May take a little bit' + Style.RESET_ALL)
+        else:
+            print(Fore.GREEN + 'PROCESS: 3D processing lungs... May take a little bit' + Style.RESET_ALL)
 
         # 0 is treated as background, which we do not want
         # not actually binary, but 1 and 2
