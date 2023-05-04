@@ -152,15 +152,14 @@ def load_meshes():
     return mesh_airways, mesh_lungs_fill, mesh_nodules, mesh_skeleton
 
 
-def surface_picked_callback(mesh):
-    if mesh is not None:
-        print(f"Selected Mesh: {mesh}")
-
-
 def visualize_meshes(processed_meshes):
     """
     Visualizes meshes with an interactive interface
     """
+
+    def surface_picked_callback(mesh):
+        if mesh is not None:
+            print(f"Selected Mesh: {mesh}")
 
     def set_opacity(actor, value):
         actor.prop.opacity = value
