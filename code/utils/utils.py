@@ -106,7 +106,8 @@ def extract_meshes_from_scan(patient_of_interest):
     segmented_lungs_fill = scan.segment_lung_mask(True)
 
     print(Fore.GREEN + 'PLOT: 3D plotting ribcage... May take a little bit')
-    mesh_skeleton = Mesh.from_scan(scan.get_scan(), name="Skeleton", color=(.98, 1., .96), threshold=400)
+    scan_wo_lungs = scan.get_scan() * (1 - segmented_lungs_fill)
+    mesh_skeleton = Mesh.from_scan(scan_wo_lungs, name="Skeleton", color=(.98, 1., .96), threshold=350)
     mesh_skeleton.save("skeleton.obj")
 
     print(Fore.GREEN + 'PLOT: 3D plotting lungs... May take a little bit')
@@ -128,12 +129,11 @@ def extract_meshes_from_scan(patient_of_interest):
 
     # adding padding to offset the external padding added to the prediction
     # see this figure for reference:
-        # "C:\Users\bardh\Desktop\2021\RIT_CS\sem_2\independent_study\lung_cancer_proj\my_figs\prediction.gif"
+    # "C:\Users\bardh\Desktop\2021\RIT_CS\sem_2\independent_study\lung_cancer_proj\my_figs\prediction.gif"
     t = 14  # Translation
-    print(f"nodules_mask: {nodules_mask.shape}, pred_nodules_mask: {pre_nodules_mask.shape}")
     nodules_mask[z_min + 12:z_min + pre_nodules_mask.shape[0] + 12,
-                 y_min + t:y_min + pre_nodules_mask.shape[1] + t,
-                 x_min + t:x_min + pre_nodules_mask.shape[2] + t] = pre_nodules_mask
+    y_min + t:y_min + pre_nodules_mask.shape[1] + t,
+    x_min + t:x_min + pre_nodules_mask.shape[2] + t] = pre_nodules_mask
 
     mesh_nodules = Mesh.from_scan(nodules_mask, name="Nodules", color=(0.18, 0.09, 0.2), threshold=0)
     mesh_nodules.save("nodules.obj")
@@ -151,40 +151,52 @@ def load_meshes():
     return mesh_airways, mesh_lungs_fill, mesh_nodules, mesh_skeleton
 
 
+def surface_picked_callback(mesh):
+    if mesh is not None:
+        print(f"Selected Mesh: {mesh}")
+
+
 def visualize_meshes(processed_meshes):
     """
     Visualizes meshes with an interactive interface
     """
+
     def set_opacity(actor, value):
         actor.prop.opacity = value
 
     # shape="3|1" means 3 plots on the left and 1 on the right,
     # shape="4/2" means 4 plots on top of 2 at bottom.
-    plotter = pv.Plotter(shape='4|1', window_size=(1000, 1200))
+    plotter = pv.Plotter(shape='3|1', window_size=(1000, 1200))
 
     for idx, mesh in enumerate(processed_meshes):
+        if mesh.name == "Nodule":
+            continue
         plotter.subplot(idx)
         plotter.add_text(mesh.name)
         plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color)
 
-    plotter.subplot(4)
+    plotter.subplot(3)
     for idx, mesh in enumerate(processed_meshes):
         if mesh.name == "Lungs":
-            lung_actor = plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, opacity=0.0)
+            lung_actor = plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, opacity=0.0,
+                                          pickable=False)
             plotter.add_slider_widget(callback=lambda value, actor=lung_actor: set_opacity(actor, value), value=0.0,
-                                      rng=[0, 1], title=f'{mesh.name} Opacity', pointa=(0.025, 0.1), pointb=(0.31, 0.1))
+                                      rng=[0, 1], title=f'{mesh.name} Opacity', pointa=(0.025, 0.1), pointb=(0.31, 0.1),
+                                      style='modern')
             continue
         elif mesh.name == "Skeleton":
-            lung_actor = plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, opacity=1.0)
+            lung_actor = plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, opacity=1.0,
+                                          pickable=False)
             plotter.add_slider_widget(callback=lambda value, actor=lung_actor: set_opacity(actor, value), value=0.0,
                                       rng=[0, 1], title=f'{mesh.name} Opacity', pointa=(0.35, 0.1),
-                                      pointb=(0.64, 0.1), )
+                                      pointb=(0.64, 0.1), style='modern')
             continue
         elif mesh.name == "Airways":
-            lung_actor = plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, opacity=1.0)
+            lung_actor = plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, opacity=1.0,
+                                          pickable=False)
             plotter.add_slider_widget(callback=lambda value, actor=lung_actor: set_opacity(actor, value), value=0.0,
                                       rng=[0, 1], title=f'{mesh.name} Opacity', pointa=(0.67, 0.1),
-                                      pointb=(0.98, 0.1), )
+                                      pointb=(0.98, 0.1), style='modern')
             continue
         plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color)
 
@@ -192,6 +204,7 @@ def visualize_meshes(processed_meshes):
     plotter.link_views()
 
     # plotter.camera_position = [(15, 5, 0), (0, 0, 0), (0, 1, 0)]
+    # plotter.set_background(color="white")
     plotter.show()
 
 
@@ -228,5 +241,3 @@ def get_lung_box(binary_mask, new_shape, old_shape, margin=12):
     lung_box[2] = max(0, x_min - margin), min(new_shape[2], x_max + margin)
 
     return lung_box
-
-
