@@ -167,7 +167,7 @@ def visualize_meshes(processed_meshes):
 
     # shape="3|1" means 3 plots on the left and 1 on the right,
     # shape="4/2" means 4 plots on top of 2 at bottom.
-    plotter = pv.Plotter(shape='3|1', window_size=(1000, 1200))
+    plotter = pv.Plotter(shape='3|1|3', window_size=(1000, 1200))
 
     for idx, mesh in enumerate(processed_meshes):
         if mesh.name == "Nodule":
@@ -199,7 +199,27 @@ def visualize_meshes(processed_meshes):
                                       rng=[0, 1], title=f'{mesh.name} Opacity', pointa=(0.67, 0.1),
                                       pointb=(0.98, 0.1), style='modern')
             continue
-        plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color)
+        else:
+            plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color, pickable=True)
+
+    plotter.enable_surface_picking(callback=surface_picked_callback, left_clicking=True)
+
+    volume = np.load("ndarrays/scan.npy")
+    volume.transpose((2, 1, 0))
+
+    # convert the volume to a PyVista data object
+    mesh = pv.wrap(volume)
+
+    slicer = Slicer(plotter, mesh)
+
+    plotter.subplot(4)
+    plotter.add_slider_widget(slicer.slice_z, mesh.bounds[0:2], )
+
+    plotter.subplot(5)
+    plotter.add_slider_widget(slicer.slice_y, mesh.bounds[2:4], )
+
+    plotter.subplot(6)
+    plotter.add_slider_widget(slicer.slice_x, mesh.bounds[4:6], )
 
     # link all the views
     plotter.link_views(views=list(range(4)))
