@@ -10,6 +10,7 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 
 from utils.LungScanner import LungScanner
 from utils.Mesh import Mesh
+from utils.Slicer import Slicer
 from utils.config import config
 
 
@@ -201,10 +202,7 @@ def visualize_meshes(processed_meshes):
         plotter.add_mesh(mesh.polydata, show_edges=False, color=mesh.color)
 
     # link all the views
-    plotter.link_views()
-
-    # plotter.camera_position = [(15, 5, 0), (0, 0, 0), (0, 1, 0)]
-    # plotter.set_background(color="white")
+    plotter.link_views(views=list(range(4)))
     plotter.show()
 
 
