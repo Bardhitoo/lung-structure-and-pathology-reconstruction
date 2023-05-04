@@ -1,18 +1,18 @@
 # 3D Lung Nodule Detection and Reconstruction Lung Nodule Detection
 
-Lung cancer is the leading cause of cancer death worldwide, accounting for nearly a quarter of all cancer deaths. Early detection is crucial for successful treatment, but identifying lung nodules can be challenging due to their size and location. This project aims to improve the accuracy and efficiency of lung nodule detection and lung and airway reconstruction, ultimately enhancing the diagnostic capabilities of oncologists and improving patient outcomes.
+Nearly a quarter of all cancer deaths are caused by lung cancer, which is the most common cancer worldwide. Early detection is essential for effective therapy, but because of their size and location, lung nodules can be difficult to spot. The goal of this study is to increase the precision and effectiveness of lung and airway reconstruction, lung nodule detection, and oncologists' ability to diagnose patients.
 
 ## Overview
-We leverage cutting-edge computer vision and machine learning techniques to develop a pipeline for 3D reconstruction of lung anatomy, lung airways, and potential malignant cancer. The pipeline consists of several stages including image pre-processing, feature extraction, model training and evaluation, and 3D reconstruction.
+We design a 3D reconstruction pipeline for lung anatomy and possibly malignant tumors using cutting-edge computer vision and machine learning approaches. 3D reconstruction, feature extraction, image pre-processing, model training, and validation, and are some of the processes that make up the pipeline.
 
 ## Computer Vision
-Our computer vision component detects and segments lung anatomy within CT scans. This stage involves image pre-processing techniques such as image normalization, filtering, and segmentation to prepare the data for further processing.
+In CT scans, our computer vision component recognizes and categorizes the lung anatomy. In order to prepare the data for subsequent processing, this stage uses 2D pre-processing techniques like: filtering, image normalization, and segmentation.
 
 ## Machine Learning
-We utilize 3D Deep Convolution Neural Networks (DCNN) trained in multi-task fashion models for nodule segmentation and false-positive reduction. These models are designed to accurately identify lung nodules, providing a solid foundation for further analysis.
+For nodule segmentation and false-positive reduction, we use 3D Deep Convolution Neural Networks (DCNN) trained in multi-head manner. These models are made to precisely locate lung nodules, offering a strong starting point for future investigation.
 
-## 3D Reconstruction
-The 3D reconstruction module creates detailed 3D models of the lung, airways, and potential nodules, which can be analyzed for signs of malignancy based on nodule shape, size, location, and proximity to airways. This stage employs computer graphics and 3D reconstruction algorithms to create realistic models of the lung and airways.
+## 3D reconstruction
+The detailed 3D models of the airways, lungs, skeleton, and possibly nodules produced by the 3D reconstruction module can be examined for indications of malignancy based on their size, shape, position, and closeness to airways. In this stage, accurate models of the lung and airways are created using computer graphics and 3D reconstruction algorithms.
 
 This polyhedron demo is rendered on GPU and is real-time.
 
