@@ -125,6 +125,7 @@ def extract_meshes_from_scan(patient_of_interest):
 
     (z_min, _), (y_min, _), (x_min, _) = get_lung_box(segmented_lungs_fill, scan.resampled_image.shape,
                                                       scan.image.shape, margin=14)
+    print(z_min, y_min, x_min, "\n\n")
 
     nodules_mask = np.zeros((scan.resampled_image.shape))
 
@@ -159,7 +160,10 @@ def visualize_meshes(processed_meshes):
 
     def surface_picked_callback(mesh):
         if mesh is not None:
-            print(f"Selected Mesh: {mesh}")
+            print(f"Selected Mesh: {mesh} - Updated poitns: {mesh + np.array([25,39,24])}")
+            slicer.slice_x(mesh[0] - 25)
+            slicer.slice_y(mesh[1] + 49)
+            slicer.slice_z(mesh[2] + 25)
 
     def set_opacity(actor, value):
         actor.prop.opacity = value
@@ -169,7 +173,7 @@ def visualize_meshes(processed_meshes):
     plotter = pv.Plotter(shape='3|1|3', window_size=(1000, 1200))
 
     for idx, mesh in enumerate(processed_meshes):
-        if mesh.name == "Nodule":
+        if mesh.name == "Nodules":
             continue
         plotter.subplot(idx)
         plotter.add_text(mesh.name)
@@ -208,7 +212,6 @@ def visualize_meshes(processed_meshes):
 
     # convert the volume to a PyVista data object
     mesh = pv.wrap(volume)
-
     slicer = Slicer(plotter, mesh)
 
     plotter.subplot(4)
