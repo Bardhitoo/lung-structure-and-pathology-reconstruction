@@ -4,8 +4,6 @@ from utils.utils import extract_meshes_from_scan, load_meshes, visualize_meshes
 from utils.config import config
 
 
-# TODO: Create a threshold slider widget
-#   Rescale and position the nodules in the appropriate position
 def main():
     if config["PROCESS_FROM_FILE"]:
         patients = [file for file in os.listdir(config["INPUT_FOLDER"]) if file.endswith(".mhd")]

@@ -1,0 +1,10 @@
+# TODO 1: Match nodule location with slice display location
+    # Resources:
+        # pl.enable_mesh_picking(callback=callback, left_clicking=True, show=False)
+        # pl.enable_point_picking(callback=callback, left_clicking=True, show=False)
+        # pl.enable_surface_picking(callback=callback, left_clicking=True, show=False)
+        # Picking overhaul - https://github.com/pyvista/pyvista/pull/4254
+    # TODO 1.4: Post-process skeleton
+
+
+# TODO: Create a threshold slider widget - Volume rendering: https://docs.pyvista.org/examples/02-plot/volume.html
