@@ -16,7 +16,9 @@ The detailed 3D models of the airways, lungs, skeleton, and possibly nodules pro
 
 This polyhedron demo is rendered on GPU and is real-time.
 
-<img src="./code/figs/currentWork3.gif" width="800" > 
+<img src="./code/figs/lungs_recon.jpg" width="800" > 
+
+<img src="./code/figs/currentWork2.gif" width="800" > 
 
 ## Getting Started
 To get started with the project, please follow the installation and usage instructions provided in the documentation.
